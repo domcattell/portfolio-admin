@@ -1,0 +1,33 @@
+@import '../../utils/global.scss';
+
+.login_page {
+	&__header_container {
+		background: rgb(2, 0, 36);
+		background: linear-gradient(20deg, $gun-powder 50%, lighten($gun-powder, 5%) 50%);
+		color: white;
+		width: 100%;
+		padding: 100px;
+		margin-bottom: 65px;
+
+		@include sm {
+			padding: 60px;
+		}
+
+		@include xs {
+			padding: 30px;
+			margin-bottom: 10px;
+		}
+	}
+
+	&__header {
+		font-size: 32px;
+		font-family: 'Noto Sans', sans-serif;
+		font-weight: 700;
+	}
+
+	&__sub_heading {
+		display: block;
+		margin-top: 5px;
+		font-weight: 400;
+	}
+}

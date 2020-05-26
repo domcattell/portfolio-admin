@@ -1,0 +1,6 @@
+//custom primary colour variable for bootstrap
+@import './global.scss';
+
+$primary:       $gun-powder;
+
+@import '../../../node_modules/bootstrap/scss/bootstrap.scss'

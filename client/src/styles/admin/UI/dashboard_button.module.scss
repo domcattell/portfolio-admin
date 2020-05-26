@@ -1,0 +1,62 @@
+@import '../../utils/global.scss';
+
+@mixin interactions() {
+	&:hover {
+		background-color: $clr-btn-hover;
+		color: $clr-text-light;
+	}
+
+	&:active {
+		transform: translateY(0.5px);
+		outline: none;
+		// box-shadow: inset 0px 0px 0px 3px $clr-btn-hover;
+	}
+
+	&:focus {
+		outline: none;
+		box-shadow: inset 0px 0px 0px 2px $clr-btn-hover;
+	}
+}
+
+.large {
+	font-size: 30px;
+	border: none;
+	cursor: pointer;
+	background: none;
+	border-radius: 5px;
+	margin: 0;
+	padding: 0;
+	padding: 3px 25px;
+	transition: background 0.35s ease;
+	outline: none;
+	color: $clr-text-light;
+	@include interactions;
+}
+
+.alternative {
+	font-size: 20px;
+	border: none;
+	cursor: pointer;
+	background: none;
+	border-radius: 5px;
+	margin: 0;
+	padding: 3px 20px;
+	transition: background 0.35s ease, color 0.35s ease;
+	outline: none;
+	color: $clr-text-dark;
+	@include interactions;
+}
+
+.small {
+	font-size: 18px;
+	border: none;
+	cursor: pointer;
+	background: none;
+	border-radius: 5px;
+	margin: 0;
+	padding: 3px 20px;
+	transition: background 0.3s ease;
+	outline: none;
+	color: $clr-text-light;
+	@include interactions;
+}

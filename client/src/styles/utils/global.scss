@@ -1,0 +1,88 @@
+//**colours**//
+//pallete
+$twilight-blue: #FDFFFF;
+// $gun-powder: #39384e;
+// $gun-powder: #353941;
+$gun-powder: #48505e;
+$geraldine: #80B192;
+
+//pallete shades
+$grey: #444040;
+$grey-10: lighten($grey, 90%);
+$grey-20: lighten($grey, 80%);
+$grey-30: lighten($grey, 70%);
+$grey-40: lighten($grey, 60%);
+$grey-50: lighten($grey, 50%);
+$grey-60: lighten($grey, 40%);
+$grey-70: lighten($grey, 30%);
+$grey-80: lighten($grey, 20%);
+$grey-90: lighten($grey, 10%);
+
+$gun-powder-10: lighten($gun-powder, 90%);
+$gun-powder-20: lighten($gun-powder, 80%);
+$gun-powder-30: lighten($gun-powder, 70%);
+$gun-powder-40: lighten($gun-powder, 60%);
+$gun-powder-50: lighten($gun-powder, 50%);
+$gun-powder-60: lighten($gun-powder, 40%);
+$gun-powder-70: lighten($gun-powder, 30%);
+$gun-powder-80: lighten($gun-powder, 20%);
+$gun-powder-90: lighten($gun-powder, 10%);
+
+//**functional 
+$clr-text-dark: $grey;
+$clr-text-light: $twilight-blue;
+$clr-border: $grey-40;
+$clr-btn-background: $gun-powder;
+$clr-btn-hover: $gun-powder-90; 
+$clr-btn-hover-light: $gun-powder-40;
+$clr-link-hover: lighten($grey, 65%);  
+$clr-bg-error: darken($geraldine, 7%);
+
+//**breakpoint variable sizes**//
+$xxs: 568px;
+$xs: 768px;
+$sm: 991px;
+$md: 1199px;
+$lg: 1200px;
+
+//**breakpoint mixins
+@mixin xxs {
+    @media only screen and (max-width: $xxs)  {@content;}
+}
+
+@mixin xs {
+    @media only screen and (max-width: $xs) {@content;}
+}
+
+@mixin sm {
+    @media only screen and (max-width: $sm) {@content;}
+}
+
+@mixin md {
+    @media only screen and (max-width: $md) {@content;}
+}
+
+@mixin lg {
+    @media only screen and (min-width: $lg) {@content;}
+}
+
+//apply opacity to colourvariable
+// @mixin opacity($col, $opacity){
+//     background-color: rgba($col, $opacity)
+// }
+
+// @mixin btnAccents() {
+//     &:hover {
+//         background-color: $clr-btn-hover;
+//         color: $clr-text-light;
+//     }
+
+//     &:active {
+//         transform: translateY(2px);
+//         outline: none;
+//     }
+
+//     &:focus {
+//         outline: none;
+//     }
+// }

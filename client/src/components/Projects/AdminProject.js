@@ -13,7 +13,7 @@ const AdminProject = (props) => {
 
 	return (
 		<div className={styles.project}>
-			{editModal && <EditProject show={editModal} toggle={toggleEditModal} url={props.url} title={props.title} />}
+			{editModal && <EditProject show={editModal} toggle={toggleEditModal} url={props.url} title={props.title} id={props.id}/>}
 			{deleteModal && (
 				<DeleteProject show={deleteModal} toggle={toggleDeleteModal} url={props.url} title={props.title} />
 			)}

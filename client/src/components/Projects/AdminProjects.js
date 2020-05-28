@@ -23,6 +23,7 @@ const AdminProjects = () => {
 					{projects.map((project) => (
 						<AdminProject
 							key={project._id}
+							id={project._id}
 							title={project.title}
 							img={project.projectImg}
 							url={project.url}

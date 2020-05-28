@@ -10,16 +10,30 @@ const EditProject = (props) => {
 	const { editProject, getProject, clearProjectMsg, clearProject, loadingProject } = useContext(ProjectsActions);
 	const { project } = useContext(ProjectsContext);
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const form_data = new FormData(e.target);
+		form_data.set('description', projectDetails.description);
+		form_data.set('imageName', projectDetails.imageName);
+		// form_data.set('title', projectDetails.title)
+		// form_data.set('code', projectDetails.code)
+		// form_data.set('demo', projectDetails.demo)
+		form_data.set('projectImg', projectDetails.projectImg);
+		editProject(props.url, form_data);
+	};
+
 	/**
 	 * two @useEffect hooks here. 
-	 * the first is to fetch the initial data, only on mount, and then do cleanup on close
+	 * the first is to fetch the initial data, and then do cleanup on close
 	 * second hook is to prefill the @useInputState hook with the fetched data. this re renders
 	 * when the @project state changes, and fills in the form with data
+	 * (the project name is tied to the url, as that is what the url is built from,
+	 * so if the title changes, the below @useEffect will run again as it looks for changes
+	 * in props.url, and thus then sends a put request to the same new/modified endpoint on the server)
 	 */
 
 	useEffect(
 		() => {
-			loadingProject();
 			getProject(props.url);
 			return () => {
 				clearProject();
@@ -36,18 +50,10 @@ const EditProject = (props) => {
 		[ project ]
 	);
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		const form_data = new FormData(e.target);
-		form_data.set('description', projectDetails.description);
-		form_data.set('imageName', projectDetails.imageName);
-		editProject(props.url, form_data);
-	};
-
 	return (
 		<Modal size="lg" show={props.show} onHide={props.toggle} centered>
 			<Modal.Header closeButton>
-				<Modal.Title id="new-project">Edit {props.title}</Modal.Title>
+				<Modal.Title id="edit-project">Edit {props.title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Container>
@@ -93,7 +99,7 @@ const EditProject = (props) => {
 									</Button>
 								</Col>
 								<Col>
-									<Form.File id="formcheck-api-custom" custom>
+									<Form.File custom>
 										<Form.File.Input
 											accept=".jpg,.jpeg,.png"
 											name="projectImg"

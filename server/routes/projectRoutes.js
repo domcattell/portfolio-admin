@@ -27,6 +27,13 @@ router.get('/', (req, res) => {
 router.get('/:projectURL', async (req, res) => {
 	const { projectURL } = req.params;
 	try {
+		// await projects.findById(id, (err, foundProject) => {
+		// 	if(err) {
+		// 		throw Error('Something went wrong getting the project information');
+		// 	} else {
+		// 		res.status(200).json(foundProject);
+		// 	}
+		// })
 		await projects.findOne({ url: projectURL }, (err, foundProject) => {
 			if (err) {
 				throw Error('Something went wrong');
@@ -49,6 +56,7 @@ router.post('/new', checkAuth, async (req, res) => {
 	const url = `${req.protocol}://${req.get('host')}`;
 
 	try {
+		console.log(req.body);
 		if (!title || !description || !code || !demo || !req.files) throw Error('Please enter all of the fields');
 
 		//check if project already exists, if title name already present, throw an error

@@ -4,7 +4,8 @@ const express = require('express'),
     bcrypt = require('bcrypt'),
     jwt = require('jsonwebtoken'),
     checkAuth = require('../middleware/checkAuth');
-    const secret = require('../config/keys').secretToken;
+    // const secret = require('../config/keys').secretToken;
+    const secret = process.env.JWT_SECRET
 
 router.post('/admin/login', async (req, res) => {
     const { username, password } = req.body;

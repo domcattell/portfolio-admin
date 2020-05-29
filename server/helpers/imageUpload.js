@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const fileHelper = {};
+const cloudinary = require('cloudinary').v2;
 
 /**
 * File upload helper function to simplify uploading, renaming and deleting a file
@@ -33,7 +34,7 @@ const fileHelper = {};
 */
 
 //global vars
-const FILE_DIR = '../client/public/images/';
+const FILE_DIR = './tmp/';
 
 fileHelper.uploadFile = (projectName, file) => {
 	const formatFileName = projectName.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_').toLowerCase();
@@ -48,19 +49,17 @@ fileHelper.uploadFile = (projectName, file) => {
 		const formats = [ 'image/png', 'image/jpeg', 'image/jpg' ];
 
 		if (formats.every((format) => format != currentFormat)) {
-			throw Error('Please choose the corrent format.');
+			throw Error('Please choose the correct format.');
 		} else if (size > maxFileSize) {
 			throw Error('Image size too large. ');
 		}
 	};
 
 	const uploadFile = () => {
-		file.mv(filePath, (err) => {
-			if (err) {
-				console.log(err);
-				throw Error('Something went wrong uploading the image');
-			}
-		});
+		cloudinary.uploader.upload_stream((err, res) => {
+			if(err) console.log(`CLOUDINARY ERROR: ${err}`)
+			console.log(res)
+		}).end(file.data)
 	};
 
 	validateFile();

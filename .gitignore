@@ -1,5 +1,5 @@
 node_modules
 client/node_modules
-client/public/images
-server/config/keys.js
-server/public
+server/config/
+.env
+test.js

@@ -1,11 +1,11 @@
 const express = require('express');
+require('dotenv').config()
 const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
+const cloudinary = require('cloudinary').v2
 //ROUTES
 const adminRoutes = require('./routes/adminRoutes');
 const projectRoutes = require('./routes/projectRoutes');
-// DB Config
-const db = require('./config/keys')
 
 //SETUP
 const app = express();
@@ -15,15 +15,24 @@ app.use(
 		extended: true
 	})
 );
-app.use(fileUpload());
-const port = process.env.PORT || 5000;
 
-//CONNTECT TO DB
-const {mongoURI} = db;
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+//use express-file-upload to parse req.files
+app.use(fileUpload());
+
+//cloudinary setup. used to save images to cloud
+cloudinary.config({
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME
+})
+
+const port = process.env.PORT || 5000; 
+
+//CONNECT TO DB
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 //ROUTES SETUP
-app.use('/public/images/', express.static('../client/public/images'));
+app.use('/public/images/', express.static('./tmp'));
 app.use('/api/', adminRoutes);
 app.use('/api/projects', projectRoutes);
 

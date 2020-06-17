@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const fileHelper = {};
 const cloudinary = require('cloudinary').v2;
+const dataUri = require('datauri/parser');
 
 /**
 * File upload helper function to simplify uploading, renaming and deleting a file
@@ -36,7 +37,7 @@ const cloudinary = require('cloudinary').v2;
 //global vars
 const FILE_DIR = './tmp/';
 
-fileHelper.uploadFile = (projectName, file) => {
+fileHelper.uploadFile = async (projectName, file) => {
 	const formatFileName = projectName.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_').toLowerCase();
 	const fileExt = path.extname(file.name);
 	const newFileName = `${formatFileName}_image${fileExt}`;
@@ -55,18 +56,25 @@ fileHelper.uploadFile = (projectName, file) => {
 		}
 	};
 
-	const uploadFile = () => {
-		cloudinary.uploader.upload_stream((err, res) => {
-			if(err) console.log(`CLOUDINARY ERROR: ${err}`)
-			console.log(res)
-		}).end(file.data)
+	const uploadToCloud = () => {
+		return new Promise((resolve, reject) => {
+			cloudinary.uploader.upload_stream((err, res) => {
+				if(err) {
+					reject(err)
+				} else {
+					resolve(res)
+				}
+			}).end(file.data)
+		})
 	};
 
 	validateFile();
-	uploadFile();
+	let result = await uploadToCloud();
+	console.log(result);
 
 	return {
-		fileName: newFileName
+		fileName: newFileName,
+		url: 'test'
 	};
 };
 

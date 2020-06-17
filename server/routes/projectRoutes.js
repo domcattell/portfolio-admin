@@ -49,8 +49,6 @@ router.post('/new', checkAuth, async (req, res) => {
 	const url = `${req.protocol}://${req.get('host')}`;
 
 	try {
-		console.log(req.files.projectImg)
-		
 		if (!title || !description || !code || !demo || !req.files) throw Error('Please enter all of the fields');
 
 		//check if project already exists, if title name already present, throw an error
@@ -59,7 +57,7 @@ router.post('/new', checkAuth, async (req, res) => {
 
 		//uses the upload helper function to upload file and desctructures
 		//fileName from return to use in object for saving to db
-		const { fileName } = uploadFile(title, req.files.projectImg);
+		const { fileName, url } = uploadFile(title, req.files.projectImg);
 
 		//use body to create new project
 		const newProject = new projects({
@@ -69,7 +67,7 @@ router.post('/new', checkAuth, async (req, res) => {
 			description,
 			titleSearch: title,
 			url: title.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_'),
-			projectImg: `${url}/public/images/${fileName}`,
+			projectImg: url,
 			imageName: fileName
 		});
 

@@ -2,7 +2,8 @@ const express = require('express'),
 	router = express.Router({ mergeParams: true }),
 	projects = require('../models/projects'),
 	checkAuth = require('../middleware/checkAuth'),
-	{ uploadFile, renameFile, deleteFile } = (fileHelper = require('../helpers/imageUpload'));
+	{ uploadFile, renameFile, deleteFile } = require('../utils/file.utility'),
+	is = require('../utils/validation.utility')
 
 /**
  * @route /api/projects/
@@ -46,18 +47,19 @@ router.get('/:projectURL', async (req, res) => {
  */
 router.post('/new', checkAuth, async (req, res) => {
 	const { title, description, code, demo } = req.body;
-	const url = `${req.protocol}://${req.get('host')}`;
-
+	
 	try {
-		if (!title || !description || !code || !demo || !req.files) throw Error('Please enter all of the fields');
+		// if (!title || !description || !code || !demo || !req.files) throw Error('Please enter all of the fields');
+		is.required({title, description, code, demo})
 
 		//check if project already exists, if title name already present, throw an error
 		const projectExists = await projects.findOne({ titleSearch: title });
 		if (projectExists) throw Error('Project with this name already exists');
 
-		//uses the upload helper function to upload file and desctructures
-		//fileName from return to use in object for saving to db
-		const { fileName, url } = uploadFile(title, req.files.projectImg);
+		//uses fileHelper upload function to upload image to cloudinary
+		//has optional paramerts for setting a max file size, allowed formats
+		//and a new file type to convert the sent file
+		const image = await uploadFile({ fileName: title, file: req.files.projectImg });
 
 		//use body to create new project
 		const newProject = new projects({
@@ -67,8 +69,8 @@ router.post('/new', checkAuth, async (req, res) => {
 			description,
 			titleSearch: title,
 			url: title.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_'),
-			projectImg: url,
-			imageName: fileName
+			projectImg: image.secure_url,
+			imageName: image.public_id
 		});
 
 		//createProject will save project to db
@@ -90,8 +92,6 @@ router.post('/new', checkAuth, async (req, res) => {
 router.put('/:projectURL', checkAuth, async (req, res) => {
 	const { projectURL } = req.params;
 	const { title, description, code, demo, imageName } = req.body;
-	const url = `${req.protocol}://${req.get('host')}`;
-	const imagePath = '/public/images/';
 
 	try {
 		//quick way to do validation check
@@ -117,21 +117,14 @@ router.put('/:projectURL', checkAuth, async (req, res) => {
 			throw Error('No changes were made');
 		}
 
-		//variables for renaming db fields
-		let newProjectImg = '';
-		let newImageName = '';
-
 		//if req.files exists, then change existing image with new one using uploadFile()
 		//else use renameFile() to rename the file based on the title from the body
 		//set newProjectImg and newImageName based on user choice
+		let image;
 		if (req.files) {
-			const { fileName } = uploadFile(title, req.files.projectImg);
-			newProjectImg = `${url}${imagePath}${fileName}`;
-			newImageName = fileName;
+			image = await uploadFile({fileName: title, file: req.files.projectImg});
 		} else {
-			const { newFileName } = renameFile(title, imageName);
-			newProjectImg = `${url}${imagePath}${newFileName}`;
-			newImageName = newFileName;
+			image = await renameFile({oldName: title, newName: imageName});
 		}
 
 		//object for updating db. uses newProjectImg and newImageName for "projectImg" & "imageName" fields
@@ -142,8 +135,8 @@ router.put('/:projectURL', checkAuth, async (req, res) => {
 			description,
 			titleSearch: title,
 			url: title.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_'),
-			projectImg: newProjectImg,
-			imageName: newImageName
+			projectImg: image.secure_url,
+			imageName: image.public_id
 		};
 
 		//update db and send updated document/object as json to use in front end
@@ -177,7 +170,7 @@ router.delete('/:projectURL', checkAuth, async (req, res) => {
 		if (!removeProject) throw Error('Error trying to remove project');
 
 		//deleteFile() from fileHelper to find image and delete it
-		deleteFile(project.imageName);
+		await deleteFile(project.imageName);
 
 		res.status(200).json({ msg: 'Deleted project' });
 	} catch (err) {

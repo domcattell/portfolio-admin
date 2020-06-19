@@ -1,9 +1,9 @@
 const express = require('express'),
 	router = express.Router({ mergeParams: true }),
-	projects = require('../models/projects'),
+	projects = require('../models/project'),
 	checkAuth = require('../middleware/checkAuth'),
 	{ uploadFile, renameFile, deleteFile } = require('../utils/file.utility'),
-	is = require('../utils/validation.utility')
+	is = require('../utils/validation.utility');
 
 /**
  * @route /api/projects/
@@ -47,10 +47,10 @@ router.get('/:projectURL', async (req, res) => {
  */
 router.post('/new', checkAuth, async (req, res) => {
 	const { title, description, code, demo } = req.body;
-	
+
 	try {
-		// if (!title || !description || !code || !demo || !req.files) throw Error('Please enter all of the fields');
-		is.required({title, description, code, demo})
+		if (!title || !description || !code || !demo || !req.files) throw Error('Please enter all of the fields');
+		// is.required({ title, description, code, demo });
 
 		//check if project already exists, if title name already present, throw an error
 		const projectExists = await projects.findOne({ titleSearch: title });
@@ -93,9 +93,13 @@ router.put('/:projectURL', checkAuth, async (req, res) => {
 	const { projectURL } = req.params;
 	const { title, description, code, demo, imageName } = req.body;
 
+	/**changing the title will make the front end re-look (re-render) for the db entry
+	 * as this is the search parameter when getting a project from the db
+	 */
+
 	try {
 		//quick way to do validation check
-		if (!title || !description || !code || !demo) throw Error('Please enter all of the fields');
+		if (!title || !description) throw Error('Please enter thr required fields');
 
 		// const currentProject = await projects.findOne({ url: projectURL }, '-created');
 		const currentProject = await projects.findOne({ titleSearch: title });
@@ -103,29 +107,19 @@ router.put('/:projectURL', checkAuth, async (req, res) => {
 			throw Error('Project name already taken');
 		}
 
-		//if currentProject found, and the body and project match
-		//then do not query the database. quick and easy way to check
-
-		if (
-			currentProject &&
-			title === currentProject.title &&
-			description === currentProject.description &&
-			code === currentProject.code &&
-			demo === currentProject.demo &&
-			!req.files
-		) {
-			throw Error('No changes were made');
+		//checks if file exists. if so, upload and change project image
+		//if currentProject does not exist, the title has been changed and
+		//so change the file name to the new title name
+		const handleImage = async () => {
+			if (req.files) {
+				return await uploadFile({ fileName: title, file: req.files.projectImg });
+			}
+			if (!currentProject) {
+				return await renameFile({ oldName: imageName, newName: title });
+			}
 		}
-
-		//if req.files exists, then change existing image with new one using uploadFile()
-		//else use renameFile() to rename the file based on the title from the body
-		//set newProjectImg and newImageName based on user choice
-		let image;
-		if (req.files) {
-			image = await uploadFile({fileName: title, file: req.files.projectImg});
-		} else {
-			image = await renameFile({oldName: title, newName: imageName});
-		}
+		
+		const image = await handleImage();
 
 		//object for updating db. uses newProjectImg and newImageName for "projectImg" & "imageName" fields
 		const updatedProject = {
@@ -135,9 +129,9 @@ router.put('/:projectURL', checkAuth, async (req, res) => {
 			description,
 			titleSearch: title,
 			url: title.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_'),
-			projectImg: image.secure_url,
-			imageName: image.public_id
-		};
+			projectImg: image ? image.secure_url : currentProject.projectImg,
+			imageName: image ? image.public_id : currentProject.imageName
+		}
 
 		//update db and send updated document/object as json to use in front end
 		projects.findOneAndUpdate({ url: projectURL }, updatedProject, { new: true }, (err, project) => {
@@ -149,6 +143,7 @@ router.put('/:projectURL', checkAuth, async (req, res) => {
 		});
 	} catch (err) {
 		res.status(400).json({ msg: err.message });
+		console.log(err);
 	}
 });
 

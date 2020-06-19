@@ -55,14 +55,14 @@ const uploadFile = ({
  */
 
 const renameFile = ({ newName = null, oldName = null }) => {
-	if (!newName || !oldName) console.error('ERROR: newName and oldName are required parameters');
+	if (!newName || !oldName) new Error('ERROR: newName and oldName are required parameters');
 
 	//make file name url friendly
 	const newFileName = newName.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_').toLowerCase();
 
 	//create new promise to rename file currently present on cloudinary
 	return new Promise((resolve, reject) => {
-		cloudinary.uploader.rename(oldName, newFileName, (err, res) => {
+		cloudinary.uploader.rename(oldName, newFileName, { overwrite: true }, (err, res) => {
 			if (err) {
 				reject(err);
 			} else {

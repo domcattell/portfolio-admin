@@ -3,6 +3,11 @@ const cloudinary = require('cloudinary').v2;
 const DEFAULT_MAX_SIZE = 3 * 1000000;
 const DEFAULT_ALLOWED_FORMATS = [ 'image/png', 'image/jpeg', 'image/jpg' ];
 const DEFAULT_CONVERT_FILE = 'png';
+const SAFE_REGEX_NAME = /[&\/\\#,+()$~%.'":*?<>/ /{}]/g;
+
+const formatFileName = (fileName) => {
+	return fileName.replace(SAFE_REGEX_NAME, '_').toLowerCase();
+};
 
 /**
  * @param {*} fileName file name which will be used as cloudinary public_id
@@ -21,7 +26,7 @@ const uploadFile = ({
 	if (!fileName || !file) console.error('ERROR: fileName and file are required parameters');
 
 	//make filename url friendly
-	const newFileName = fileName.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_').toLowerCase();
+	const newFileName = formatFileName(fileName);
 
 	//get current file type and size
 	const currentFormat = file.mimetype;
@@ -58,7 +63,7 @@ const renameFile = ({ newName = null, oldName = null }) => {
 	if (!newName || !oldName) new Error('ERROR: newName and oldName are required parameters');
 
 	//make file name url friendly
-	const newFileName = newName.replace(/[&\/\\#,+()$~%.'":*?<>/ /{}]/g, '_').toLowerCase();
+	const newFileName = formatFileName(newName);
 
 	//create new promise to rename file currently present on cloudinary
 	return new Promise((resolve, reject) => {

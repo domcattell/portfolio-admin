@@ -5,13 +5,16 @@
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
-	flex-direction: row-reverse;
-	box-shadow: inset 0px -52px 0px -24px $gun-powder-90;
-
-	padding: 20px 25px 161px 25px;
+	padding: 0.7em;
 	position: fixed;
 	top: 0;
 	width: 100%;
+
+	&__controls {
+		display: flex;
+		flex-direction: row;
+		margin: 0;
+	}
 
 	&__header {
 		color: $clr-text-light;

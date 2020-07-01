@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR, AUTH_ERROR, AUTH_SUCCESS, CLEAR_MSGS, LOGOUT } from '../actions/types';
+import { LOGIN_SUCCESS, LOGIN_ERROR, AUTH_ERROR, AUTH_SUCCESS, CLEAR_MSGS, LOGOUT, REGISTER_SUCCESS, REGISTER_ERROR, PASSWORD_CHANGE_ERROR, PASSWORD_CHANGE_SUCCESS } from '../actions/types';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -27,6 +27,22 @@ const reducer = (state, action) => {
                 user: null,
                 isAuthenticated: false,
                 authMsgs: action.payload.msg
+            }
+
+        case REGISTER_SUCCESS:
+        case PASSWORD_CHANGE_SUCCESS:
+            return {
+                ...state,
+                authMsgs: action.payload.msg,
+                loadingAuth: false
+            }
+
+        case REGISTER_ERROR:
+        case PASSWORD_CHANGE_ERROR:
+            return {
+                ...state,
+                authMsgs: action.payload.msg,
+                loadingAuth: false
             }
 
         case LOGOUT:

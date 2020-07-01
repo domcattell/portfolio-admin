@@ -1,0 +1,10 @@
+@import '../../utils/global.scss';
+
+.dropdown {
+    background-color: $clr-btn-background;
+    position: absolute;
+    top: 70px;
+    padding: 1em;
+    border: 1px solid red;
+    z-index: 99999999999999999;
+}

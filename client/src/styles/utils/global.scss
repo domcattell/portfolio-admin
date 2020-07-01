@@ -3,8 +3,8 @@
 $twilight-blue: #FDFFFF;
 // $gun-powder: #39384e;
 // $gun-powder: #353941;
-$gun-powder: #48505e;
-$geraldine: #80B192;
+$gun-powder: rgb(50, 56, 63);
+$geraldine: #6b738f;
 
 //pallete shades
 $grey: #444040;
@@ -33,7 +33,7 @@ $clr-text-dark: $grey;
 $clr-text-light: $twilight-blue;
 $clr-border: $grey-40;
 $clr-btn-background: $gun-powder;
-$clr-btn-hover: $gun-powder-90; 
+$clr-btn-hover: rgba(212, 212, 212, 0.2); 
 $clr-btn-hover-light: $gun-powder-40;
 $clr-link-hover: lighten($grey, 65%);  
 $clr-bg-error: darken($geraldine, 7%);

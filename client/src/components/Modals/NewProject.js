@@ -36,7 +36,7 @@ const NewProjects = (props) => {
 								value={project.title || ''}
 								onChange={handleChange}
 								type="text"
-								placeholder="Title"
+								placeholder="Title *"
 							/>
 						</Form.Group>
 

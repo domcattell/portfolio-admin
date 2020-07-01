@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
 const cloudinary = require('cloudinary').v2
 //ROUTES
-const adminRoutes = require('./routes/adminRoutes');
-const projectRoutes = require('./routes/projectRoutes');
+const adminRoutes = require('./routes/admin');
+const projectRoutes = require('./routes/projects');
 
 //SETUP
 const app = express();
@@ -32,8 +32,7 @@ const port = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 //ROUTES SETUP
-app.use('/public/images/', express.static('./tmp'));
-app.use('/api/', adminRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/projects', projectRoutes);
 
 app.listen(port, (err) => {

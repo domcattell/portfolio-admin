@@ -5,6 +5,7 @@
 	background-color: $grey-30;
 	border-right: 1px solid $clr-border;
 	color: $clr-text-dark;
+	backdrop-filter: blur(5px);
 
 	&__header {
 		font-size: 32px;

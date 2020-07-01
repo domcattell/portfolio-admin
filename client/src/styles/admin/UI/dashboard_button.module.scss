@@ -3,7 +3,6 @@
 @mixin interactions() {
 	&:hover {
 		background-color: $clr-btn-hover;
-		color: $clr-text-light;
 	}
 
 	&:active {
@@ -19,15 +18,22 @@
 }
 
 .large {
-	font-size: 30px;
+	font-size: 1rem;
 	border: none;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 50%;
+	height: 3em;
+	width: 3em;
+	display: flex;
+	float: left;
+	justify-content: center;
+	align-items: center;
 	cursor: pointer;
-	background: none;
-	border-radius: 5px;
-	margin: 0;
+	margin-right: 0.8em;
+	position: relative;
 	padding: 0;
 	padding: 3px 25px;
-	transition: background 0.35s ease;
+	transition: background-color 0.2s ease;
 	outline: none;
 	color: $clr-text-light;
 	@include interactions;
@@ -41,7 +47,7 @@
 	border-radius: 5px;
 	margin: 0;
 	padding: 3px 20px;
-	transition: background 0.35s ease, color 0.35s ease;
+	transition: background-color 0.2s ease, color 0.35s ease;
 	outline: none;
 	color: $clr-text-dark;
 	@include interactions;
@@ -55,7 +61,7 @@
 	border-radius: 5px;
 	margin: 0;
 	padding: 3px 20px;
-	transition: background 0.3s ease;
+	transition: background-color 0.25s ease;
 	outline: none;
 	color: $clr-text-light;
 	@include interactions;

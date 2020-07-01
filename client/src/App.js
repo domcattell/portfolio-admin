@@ -21,7 +21,7 @@ import {
 	faLink,
 	faAt,
 	faSmile,
-	faUserPlus
+	faPlus
 } from '@fortawesome/free-solid-svg-icons';
 
 toast.configure({
@@ -33,7 +33,6 @@ toast.configure({
 const App = () => {
 	library.add(
 		fab,
-		faUserPlus,
 		faCog,
 		faSignOutAlt,
 		faHome,
@@ -43,7 +42,8 @@ const App = () => {
 		faTrash,
 		faLink,
 		faAt,
-		faSmile
+		faSmile,
+		faPlus
 	);
 
 	return (

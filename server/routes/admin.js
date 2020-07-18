@@ -1,8 +1,7 @@
 const express = require('express'),
     router = express.Router({ mergeParams: true }),
-    checkAuth = require('../middleware/checkAuth'),
-    auth = require('../controllers/auth');
-
+    user = require('../controllers/users.controller'),
+    middleware = require('../middleware/index');
 /**
  * @route /api/admin
  * @private: @get /user
@@ -10,9 +9,9 @@ const express = require('express'),
  * @private: @post /register
  */
 
-router.post('/login', auth.login);
-router.get('/user', checkAuth, auth.getUser);
-router.post('/register', checkAuth, auth.register)
-router.put('/account', checkAuth, auth.changePassword)
+router.post('/login', middleware.findUser, user.login);
+router.get('/user', middleware.checkAuth, user.getUser);
+router.post('/register', middleware.checkAuth, user.register)
+router.put('/account', middleware.checkAuth, middleware.findUser, user.changePassword)
 
 module.exports = router;

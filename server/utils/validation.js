@@ -1,11 +1,15 @@
-const is = {}
+const is = {
+	required(...values) {
+		values.forEach((value) => {
+			if (!value) {
+				throw Error(`Please enter required fields`);
+			}
+		});
+	},
 
-is.required = (...values) => {
-    values.forEach((value) => {
-        if(!value) {
-            throw Error(`Please enter all fields marked with a *`)
-        }
-    })
-}
+	passwordMatch(password, confirmPassword) {
+		if (confirmPassword != password) throw Error('Passwords do not match');
+	}
+};
 
 module.exports = is;

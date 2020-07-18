@@ -1,24 +1,23 @@
 const project = require('../models/project'),
 	{ uploadFile, renameFile, deleteFile } = require('../utils/fileHelper'),
 	is = require('../utils/validation'),
-	{ SAFE_REGEX_NAME } = require('../constants');
+	{ SAFE_REGEX_NAME } = require('../constants'),
+projectService = require('../services/projects.service');
 
 const getAllProjects = async (req, res) => {
 	try {
-		const allProjects = await project.find();
-		if (!allProjects) throw Error('Error finding projects');
+		const allProjects = await projectService.findAllProjects();
 
 		res.status(200).json(allProjects);
-	} catch (e) {
-		res.status(200).json(allProjects);
+	} catch (err) {
+		res.status(400).json({ msg: err.message });
 	}
 };
 
 const getProject = async (req, res) => {
 	const { projectURL } = req.params;
 	try {
-		const foundProject = await project.findOne({ url: projectURL });
-		if (!foundProject) throw Error(`This project couldn't be found`);
+		const foundProject = await projectService.findProject(projectURL);
 
 		res.status(200).json(foundProject);
 	} catch (e) {
@@ -30,33 +29,22 @@ const createProject = async (req, res) => {
 	const { title, description, code, demo } = req.body;
 
 	try {
-		//check required fields have been filled in
 		is.required(title, description, req.files);
 
-		//check if project already exists, if title name already present, throw an error
-		const projectExists = await project.findOne({ titleSearch: title });
-		if (projectExists) throw Error('Project with this name already exists');
+		await projectService.findProjectByTitle(title);
 
-		//use file utility to upload file to cloudinary. requires a file name and file
 		const image = await uploadFile({ fileName: title, file: req.files.projectImg });
 
-		//use body to create new project
-		const newProject = new project({
+		const newProject = await projectService.createProject(
 			title,
 			demo,
 			code,
 			description,
-			titleSearch: title,
-			url: title.replace(SAFE_REGEX_NAME),
-			projectImg: image.secure_url,
-			imageName: image.public_id
-		});
+			image.secure_url,
+			image.public_id
+		);
 
-		//createProject will save project to db
-		const createProject = await newProject.save();
-		if (!createProject) throw Error('Something went wrong saving the project');
-
-		res.status(200).json(createProject);
+		res.status(200).json(newProject);
 	} catch (e) {
 		res.status(400).json({ msg: e.message });
 	}
@@ -74,7 +62,7 @@ const editProject = async (req, res) => {
 		//check required fields have been filled in
 		is.required(title, description);
 
-		const checkProjectExists = await project.findOne({ titleSearch: title });
+		const checkProjectExists = await projectService.findProjectByTitle(title);
 		if (checkProjectExists && projectURL != checkProjectExists.url) {
 			throw Error('Project name already taken');
 		}

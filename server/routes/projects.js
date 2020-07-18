@@ -1,7 +1,7 @@
 const express = require('express'),
 	router = express.Router({ mergeParams: true }),
 	checkAuth = require('../middleware/checkAuth'),
-	projects = require('../controllers/projects');
+	projects = require('../controllers/projects.controller');
 
 /**
  * @route /api/projects

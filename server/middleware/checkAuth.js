@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 // const secret = require('../config/keys').secretToken;
 const secret = process.env.JWT_SECRET
 
-const checkAuth = (req, res, next) => {
+module.exports = (req, res, next) => {
     const token = req.header('x-auth-token');
 
     if(!token) {
@@ -19,5 +19,3 @@ const checkAuth = (req, res, next) => {
         });
     };
 };
-
-module.exports = checkAuth;
